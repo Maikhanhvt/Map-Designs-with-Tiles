@@ -2,7 +2,7 @@
 
 ## Project Introduction
 This project applies raster map design and tile generation.
-Focusing on map design, there are 4 map layer options to toggle through. The thematic map is based on the Seattle dataset of public park benches, following with a custome mapbox map based on winter sunsets, inspired from the perpective of sitting at a park bench viewing the sunset here in Seattle!
+Focusing on map design, there are 4 map layer options to toggle through. The thematic map is based on the Seattle dataset of public park benches, following with a custom mapbox map based on winter sunsets, inspired from the perpective of sitting at a park bench viewing the sunset here in Seattle!
 
 
 ## Viewing Tile Map Sets
