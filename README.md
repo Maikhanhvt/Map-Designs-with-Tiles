@@ -28,10 +28,10 @@ https://Maikhanhvt.github.io/Map-Designs-with-Tiles/index.html
 ---
 
 ## Zoom Levels of Tile Set
-**tileset_1** - 3-14
-**tileset_2** - 1-14
-**tileset_3** - 3-14
-**tileset_4** - 1-14
+**tileset_1**: 3-14
+**tileset_2**: 1-14
+**tileset_3**: 3-14
+**tileset_4**: 1-14
 Projection: ESPG: 3857
 
 ---
