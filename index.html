@@ -23,12 +23,12 @@ body {
 
 /* style of layer control menu */
 #menu {
-    background: #fff;
+    background: #d6ce9d;
     position: absolute;
     z-index: 1;
     top: 10px;
     right: 10px;
-    border-radius: 3px;
+    border-radius: 10px;
     width: 140px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     font-family: sans-serif;
@@ -43,6 +43,7 @@ body {
     text-decoration: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
     text-align: center;
+    border-radius: 10px;
 }
 
 /* last item of the layer items will not include a seperator */
@@ -52,11 +53,11 @@ body {
 
 /* change color and background color while a pointer is on an hybrid link. */
 #menu a:hover {
-    background-color: #f8f8f8;
+    background-color: #f8c984;
 }
 
 #menu a.active {
-    background-color: #3887be;
+    background-color: #d89103;
     color: #ffffff;
 }
 </style>
@@ -73,7 +74,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFpa2hhbmh0IiwiYSI6ImNtaHllNDdidjBheXkya29md
 const map = new mapboxgl.Map({
     container: 'map', // container ID
     center: [-122.3, 47.6], // starting center
-    zoom: 11 // starting zoom
+    zoom: 11, // starting zoom
+    style: 'mapbox://styles/maikhanht/cmlajmvc5008701stf3pwfa15' // no label map for starting
 });
 
 map.on('load', () => {
@@ -113,9 +115,9 @@ map.on('load', () => {
             type: 'raster',
             source: id,
             layout: {
-                visibility: 'none' 
-                // Uncomment the line above to hide this layer on initial load.
-                // This is useful when you add multiple tile layers.
+            visibility: 'none' 
+            // Uncomment the line above to hide this layer on initial load.
+            // This is useful when you add multiple tile layers.
             }
         });
     });
@@ -123,8 +125,14 @@ map.on('load', () => {
 
 // TOGGLES: After last frame rendered before the map enters an "idle" state.
 map.on('idle', () => {
+    //If these two layers were not added to the map, abort
+    if (!map.getLayer('tileset_1') || !map.getLayer('tileset_2') || !map.getLayer('tileset_3') || !map.getLayer('tileset_4')) {
+        return;
+    }
+
     // Enumerate ids of the layers.
-    const toggleableLayerIds = ['Basemap', 'Seattle Park Benches', 'Basemap & Data', 'Winter Sunset Theme'];
+    const toggleableLayerIds = ['tileset_1', 'tileset_2', 'tileset_3', 'tileset_4'];
+
 
     // Set up the corresponding toggle button for each layer.
     for (const id of toggleableLayerIds) {
