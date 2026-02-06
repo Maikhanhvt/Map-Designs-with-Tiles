@@ -2,46 +2,180 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>GEOG458 Maikhanh</title>
+<title>Raster Map Designs Maikhanh</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.18.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.18.1/mapbox-gl.js"></script>
+
 <style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+/* style of layer control menu */
+#menu {
+    background: #fff;
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 10px;
+    border-radius: 3px;
+    width: 140px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-family: sans-serif;
+}
+
+/* each layer on menu */
+#menu a {
+    font-size: 13px;
+    color: #404040;
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+/* last item of the layer items will not include a seperator */
+#menu a:last-child {
+    border: none;
+}
+
+/* change color and background color while a pointer is on an hybrid link. */
+#menu a:hover {
+    background-color: #f8f8f8;
+}
+
+#menu a.active {
+    background-color: #3887be;
+    color: #ffffff;
+}
 </style>
 </head>
-<body>
-<div id="map"></div>
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFpa2hhbmh0IiwiYSI6ImNtaHllNDdidjBheXkya29mdHNzc3M1b2wifQ.F0AfMAmhk0OpXT6yqUE3Vw';
-    const map = new mapboxgl.Map({
-        container: 'map', // container ID
-        center: [-122.3, 47.6], // starting position [lng, lat]. Note that lat must be set between -90 and 90
-        zoom: 11 // starting zoom
-    });
 
-    map.on('load', () => {
+<body>
+
+<nav id="menu"></nav>
+<div id="map"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFpa2hhbmh0IiwiYSI6ImNtaHllNDdidjBheXkya29mdHNzc3M1b2wifQ.F0AfMAmhk0OpXT6yqUE3Vw';
+
+const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    center: [-122.3, 47.6], // starting center
+    zoom: 11 // starting zoom
+});
+
+map.on('load', () => {
+
+    // add layers into source
     map.addSource('tileset_1', {
         type: 'raster',
-        tiles: [
-        'assets/tileset_1/{z}/{x}/{y}.png'
-        ],
+        tiles: ['assets/tileset_1/{z}/{x}/{y}.png'],
         tileSize: 256,
         attribution: 'Map tiles designed by Maikhanh Tran'
     });
 
-    map.addLayer({
-        id: 'tileset_1',
+    map.addSource('tileset_2', {
         type: 'raster',
-        source: 'tileset_1',
-        layout: {
-        // 'visibility': 'none'
-        // Uncomment the line above to hide this layer on initial load.
-        // This is useful when you add multiple tile layers.
+        tiles: ['assets/tileset_2/{z}/{x}/{y}.png'],
+        tileSize: 256
+    });
+
+    map.addSource('tileset_3', {
+        type: 'raster',
+        tiles: ['assets/tileset_3/{z}/{x}/{y}.png'],
+        tileSize: 256
+    });
+
+    map.addSource('tileset_4', {
+        type: 'raster',
+        tiles: ['assets/tileset_4/{z}/{x}/{y}.png'],
+        tileSize: 256
+    });
+
+    // make layers visible
+    const layers = ['tileset_1', 'tileset_2', 'tileset_3', 'tileset_4'];
+
+    layers.forEach(id => {
+        map.addLayer({
+            id: id,
+            type: 'raster',
+            source: id,
+            layout: {
+                visibility: 'none' 
+                // Uncomment the line above to hide this layer on initial load.
+                // This is useful when you add multiple tile layers.
+            }
+        });
+    });
+});
+
+// TOGGLES: After last frame rendered before the map enters an "idle" state.
+map.on('idle', () => {
+    // Enumerate ids of the layers.
+    const toggleableLayerIds = ['Basemap', 'Seattle Park Benches', 'Basemap & Data', 'Winter Sunset Theme'];
+
+    // Set up the corresponding toggle button for each layer.
+    for (const id of toggleableLayerIds) {
+        // Skip layers that already have a button set up.
+        if (document.getElementById(id)) {
+            continue;
         }
-    });
-    });
+
+        // Create a link.
+        const link = document.createElement('a');
+        link.id = id;
+        link.href = '#';
+        link.textContent = id;
+        link.className = 'inactive';
+
+        // Show or hide layer when the toggle is clicked.
+        link.onclick = function (e) {
+            const clickedLayer = this.textContent;
+            // preventDefault() tells the user agent that if the event does not get explicitly handled, 
+            // its default action should not be taken as it normally would be.
+            e.preventDefault();
+            // The stopPropagation() method prevents further propagation of the current event in the capturing 
+            // and bubbling phases. It does not, however, prevent any default behaviors from occurring; 
+            // for instance, clicks on links are still processed. If you want to stop those behaviors, 
+            // see the preventDefault() method.
+            e.stopPropagation();
+
+            const visibility = map.getLayoutProperty(
+                clickedLayer,
+                'visibility'
+            );
+
+            // Toggle layer visibility by changing the layout object's visibility property.
+            // if it is currently visible, after the clicking, it will be turned off.
+            if (visibility === 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else { //otherise, it will be turned on.
+                this.className = 'active';
+                map.setLayoutProperty(
+                    clickedLayer,
+                    'visibility',
+                    'visible'
+                );
+            }
+        };
+        // in the menu place holder, insert the layer links.
+        const layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }
+});
 </script>
 
 </body>
