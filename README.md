@@ -41,6 +41,7 @@ Projection: ESPG: 3857
 - Mapbox Studio
 - QGIS
 - QMetaTiles (QGIS plugin)
+- OpenStreetMap
 
 ## Credits & Acknowledgments  
 - City of Seattle Open Data
